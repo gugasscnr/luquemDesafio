@@ -3,6 +3,10 @@
 ## Descrição
 Neste desafio, você deverá desenvolver uma aplicação web para gerar senhas aleatórias com diferentes níveis de complexidade. Além disso, é **estritamente necessário** a implementação de uma pipeline de deploy para disponibilizar a aplicação em um ambiente de produção.
 
+## Primeiros passos
+1. Clone o repositório no GitHub: https://github.com/gugasscnr/luquemDesafio
+2. Crie uma branch chamada "seu nome"
+
 ## Requisitos Funcionais da Aplicação
 
 ### Gerador de Senhas
