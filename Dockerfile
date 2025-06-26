@@ -18,7 +18,6 @@ RUN npm ci
 
 # Copie o código fonte
 COPY src ./src
-COPY public ./public
 
 # Build da aplicação
 RUN npm run build
