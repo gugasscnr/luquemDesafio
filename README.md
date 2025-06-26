@@ -23,8 +23,11 @@ Este é um gerador de senhas aleatórias desenvolvido com Next.js, TypeScript e 
 - Tailwind CSS
 - Jest
 - React Testing Library
+- Docker
 
 ## Como Executar Localmente
+
+### Opção 1: Desenvolvimento Local
 
 1. Clone o repositório:
 ```bash
@@ -43,6 +46,23 @@ npm run dev
 ```
 
 4. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+
+### Opção 2: Docker
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/gerador-senhas.git
+cd gerador-senhas
+```
+
+2. Execute com Docker Compose:
+```bash
+docker compose up -d
+```
+
+3. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+
+Para mais detalhes sobre Docker, consulte [DOCKER.md](DOCKER.md).
 
 ## Scripts Disponíveis
 
