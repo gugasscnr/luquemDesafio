@@ -1,41 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { FaCopy, FaRedo } from 'react-icons/fa'
 
 export default function Home() {
   const [password, setPassword] = useState('')
   const [length, setLength] = useState(12)
-  const [includeUppercase, setIncludeUppercase] = useState(true)
-  const [includeLowercase, setIncludeLowercase] = useState(true)
-  const [includeNumbers, setIncludeNumbers] = useState(true)
-  const [includeSymbols, setIncludeSymbols] = useState(true)
-  const [history, setHistory] = useState<string[]>([])
 
   const generatePassword = () => {
-    let charset = ''
-    if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz'
-    if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    if (includeNumbers) charset += '0123456789'
-    if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?'
-
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*'
     let newPassword = ''
     for (let i = 0; i < length; i++) {
       newPassword += charset.charAt(Math.floor(Math.random() * charset.length))
     }
-
     setPassword(newPassword)
-    setHistory(prev => [newPassword, ...prev].slice(0, 5))
   }
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(password)
-  }
-
-  const getPasswordStrength = (): { text: string; color: string } => {
-    if (length < 8) return { text: 'Fraca', color: 'text-red-500' }
-    if (length < 12) return { text: 'Média', color: 'text-yellow-500' }
-    return { text: 'Forte', color: 'text-green-500' }
   }
 
   return (
@@ -53,17 +34,17 @@ export default function Home() {
           />
           <button
             onClick={copyToClipboard}
-            className="p-2 bg-primary text-white rounded hover:bg-blue-600"
+            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             title="Copiar senha"
           >
-            <FaCopy />
+            📋
           </button>
           <button
             onClick={generatePassword}
-            className="p-2 bg-primary text-white rounded hover:bg-blue-600"
+            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             title="Gerar nova senha"
           >
-            <FaRedo />
+            🔄
           </button>
         </div>
 
@@ -82,66 +63,17 @@ export default function Home() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={includeUppercase}
-                onChange={(e) => setIncludeUppercase(e.target.checked)}
-                className="mr-2"
-              />
-              Maiúsculas
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={includeLowercase}
-                onChange={(e) => setIncludeLowercase(e.target.checked)}
-                className="mr-2"
-              />
-              Minúsculas
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={includeNumbers}
-                onChange={(e) => setIncludeNumbers(e.target.checked)}
-                className="mr-2"
-              />
-              Números
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={includeSymbols}
-                onChange={(e) => setIncludeSymbols(e.target.checked)}
-                className="mr-2"
-              />
-              Símbolos
-            </label>
-          </div>
+          <button
+            onClick={generatePassword}
+            className="w-full p-3 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Gerar Senha
+          </button>
 
           {password && (
-            <div className="mt-4">
-              <p>
-                Força da senha:{' '}
-                <span className={getPasswordStrength().color}>
-                  {getPasswordStrength().text}
-                </span>
-              </p>
-            </div>
-          )}
-
-          {history.length > 0 && (
-            <div className="mt-6">
-              <h3 className="font-semibold mb-2">Histórico:</h3>
-              <ul className="space-y-2">
-                {history.map((pwd, index) => (
-                  <li key={index} className="text-sm text-gray-600">
-                    {pwd}
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-4 p-3 bg-gray-100 rounded">
+              <p className="text-sm text-gray-600">Senha gerada:</p>
+              <p className="font-mono text-lg break-all">{password}</p>
             </div>
           )}
         </div>
