@@ -11,9 +11,14 @@ describe('Home', () => {
     render(<Home />)
     const lengthInput = screen.getByRole('slider')
     fireEvent.change(lengthInput, { target: { value: '16' } })
-    const generateButton = screen.getByTitle('Gerar nova senha')
+    const generateButton = screen.getByText('Gerar Nova Senha')
     fireEvent.click(generateButton)
-    const passwordInput = screen.getByRole('textbox')
+    const passwordInput = screen.getByPlaceholderText('Sua senha aparecerá aqui')
     expect(passwordInput.value).toHaveLength(16)
+  })
+
+  it('deve exibir o título Gerador de Senhas', () => {
+    render(<Home />)
+    expect(screen.getByText('Gerador de Senhas')).toBeInTheDocument()
   })
 }) 
