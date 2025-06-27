@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Configuração simples para Vercel
 }
 
 module.exports = nextConfig 
