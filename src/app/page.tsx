@@ -1,34 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 export default function Home() {
   const [password, setPassword] = useState('')
   const [length, setLength] = useState(12)
   const [copied, setCopied] = useState(false)
-  const [dark, setDark] = useState(false)
+  const [theme, setTheme] = useState<'light' | 'dark' | null>(null)
+  const [useUpper, setUseUpper] = useState(true)
+  const [useLower, setUseLower] = useState(true)
+  const [useNumbers, setUseNumbers] = useState(true)
+  const [useSymbols, setUseSymbols] = useState(true)
 
-  // Detecta preferência do sistema e localStorage
+  // Detecta preferência do sistema/localStorage apenas no cliente
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const saved = localStorage.getItem('theme')
-    if (saved) {
-      setDark(saved === 'dark')
-      document.documentElement.classList.toggle('dark', saved === 'dark')
+    if (saved === 'dark' || saved === 'light') {
+      setTheme(saved)
     } else {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setDark(prefersDark)
-      document.documentElement.classList.toggle('dark', prefersDark)
+      setTheme(prefersDark ? 'dark' : 'light')
     }
   }, [])
 
-  // Atualiza o tema ao alternar
+  // Sincroniza a classe do <html> e o localStorage
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('theme', dark ? 'dark' : 'light')
-  }, [dark])
+    if (!theme) return
+    const root = document.documentElement
+    if (theme === 'dark') {
+      root.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+      console.log('Tema aplicado: dark')
+    } else {
+      root.classList.remove('dark')
+      // Força remoção de todas as ocorrências da classe 'dark'
+      root.className = root.className.replace(/\bdark\b/g, '').trim()
+      localStorage.setItem('theme', 'light')
+      console.log('Tema aplicado: light')
+    }
+    // Debug: mostra classes atuais e valor do tema
+    console.log('Theme state:', theme)
+    console.log('Classes do <html> após efeito:', root.className)
+  }, [theme])
+
+  // Alterna o tema de forma robusta
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   const generatePassword = () => {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*'
+    let charset = ''
+    if (useLower) charset += 'abcdefghijklmnopqrstuvwxyz'
+    if (useUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    if (useNumbers) charset += '0123456789'
+    if (useSymbols) charset += '!@#$%^&*'
+    if (!charset) {
+      setPassword('')
+      return
+    }
     let newPassword = ''
     for (let i = 0; i < length; i++) {
       newPassword += charset.charAt(Math.floor(Math.random() * charset.length))
@@ -45,16 +75,19 @@ export default function Home() {
     }
   }
 
+  // Só renderiza após detectar o tema
+  if (!theme) return null
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors">
       <header className="bg-blue-700 dark:bg-gray-900 text-white py-4 shadow-md sticky top-0 z-10 flex items-center justify-between px-4">
-        <h1 className="text-3xl font-bold text-center tracking-tight w-full">Gerador de Senhas</h1>
+        <h1 className="text-3xl font-bold text-center tracking-tight">Gerador de Senhas</h1>
         <button
-          onClick={() => setDark((d) => !d)}
+          onClick={toggleTheme}
           className="ml-4 p-2 rounded bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
           title="Alternar tema"
         >
-          {dark ? '🌙' : '☀️'}
+          {theme === 'dark' ? '🌙' : '☀️'}
         </button>
       </header>
       <main className="flex-1 flex items-center justify-center">
@@ -86,6 +119,22 @@ export default function Home() {
               onChange={(e) => setLength(Number(e.target.value))}
               className="w-full accent-blue-600"
             />
+          </div>
+
+          {/* Opções de caracteres */}
+          <div className="grid grid-cols-2 gap-2 mb-6">
+            <label className="flex items-center gap-2 text-sm dark:text-white">
+              <input type="checkbox" checked={useUpper} onChange={e => setUseUpper(e.target.checked)} /> Maiúsculas
+            </label>
+            <label className="flex items-center gap-2 text-sm dark:text-white">
+              <input type="checkbox" checked={useLower} onChange={e => setUseLower(e.target.checked)} /> Minúsculas
+            </label>
+            <label className="flex items-center gap-2 text-sm dark:text-white">
+              <input type="checkbox" checked={useNumbers} onChange={e => setUseNumbers(e.target.checked)} /> Números
+            </label>
+            <label className="flex items-center gap-2 text-sm dark:text-white">
+              <input type="checkbox" checked={useSymbols} onChange={e => setUseSymbols(e.target.checked)} /> Símbolos
+            </label>
           </div>
 
           <button
