@@ -15,11 +15,11 @@ fi
 echo "Migrating Database..."
 
 # Uncompress Dist
-cd /app/uiq/www/api/ && tar -xzvf dist.tar.gz
+cd /app/luke/www/api/ && tar -xzvf dist.tar.gz
 
 # Build Docker images
 echo "Building Docker Images..."
-cd /app/uiq/
+cd /app/luke/
 ./docker/production-build.sh
 
 # Run containers for the first time
